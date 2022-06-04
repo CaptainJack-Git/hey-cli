@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "@hey-cli/utils": "^0.0.2-alpha.0",
-    "import-local": "^3.1.0"
+    "colors": "^1.4.0",
+    "import-local": "^3.1.0",
+    "semver": "^7.3.7"
   }
 }
