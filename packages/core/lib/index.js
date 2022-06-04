@@ -15,6 +15,8 @@ function core(argvs) {
   }
 
   checkRoot()
+
+  checkUserHome()
 }
 
 function checkPkgVersion() {
@@ -38,6 +40,18 @@ function checkRoot() {
   ;(async () => {
     await import('root-check')
     log.info(process.geteuid())
+  })()
+}
+
+// 判断用户主目录
+function checkUserHome() {
+  const userHome = require('userhome')()
+
+  ;(async () => {
+    const { pathExists } = await import('path-exists')
+    if (!userHome || !pathExists(userHome)) {
+      throw new Error(colors.red(`用户主目录不存在，请检查`))
+    }
   })()
 }
 
