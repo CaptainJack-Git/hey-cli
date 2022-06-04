@@ -14,13 +14,19 @@
     "lib"
   ],
   "publishConfig": {
-    "registry": "https://registry.npmmirror.com/"
+    "registry": "https://registry.npmjs.com/"
   },
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
+<<<<<<< Updated upstream
     "@hey-cli/utils": "^0.0.0"
   }
+=======
+    "@hey-cli/utils": "^0.0.1-alpha.0"
+  },
+  "gitHead": "e3d4f2e5f34ac960706d4dea195c2991899ecce3"
+>>>>>>> Stashed changes
 }
