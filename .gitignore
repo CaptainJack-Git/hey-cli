@@ -1,0 +1,32 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+**/*/node_modules
+/.pnp
+.pnp.js
+.idea
+
+# testing
+/coverage
+
+# production
+*.zip
+*/log
+*.bak
+/build
+/build-easemobim
+
+# misc
+.DS_Store
+.env.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.VSCodeCounter/
+settings.json
+
+/todo
+*.todo

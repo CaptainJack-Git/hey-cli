@@ -1,0 +1,26 @@
+{
+  "name": "@hey-cli/core",
+  "version": "0.0.0",
+  "description": "核心入口文件",
+  "author": "CaptainJack <captain_jack_mail@163.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmmirror.com/"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "@hey-cli/utils": "^0.0.0"
+  }
+}

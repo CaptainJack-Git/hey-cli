@@ -1,0 +1,22 @@
+{
+  "name": "@hey-cli/utils",
+  "version": "0.0.0",
+  "description": "hey-cli 工具包",
+  "author": "CaptainJack <captain_jack_mail@163.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmmirror.com/"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}
