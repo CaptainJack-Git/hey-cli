@@ -5,7 +5,7 @@
   "author": "CaptainJack <captain_jack_mail@163.com>",
   "homepage": "",
   "license": "ISC",
-  "main": "index.js",
+  "main": "lib/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -20,5 +20,8 @@
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
-  "gitHead": "6ba1179e705fb70d5277771c693f674e09e9d585"
+  "gitHead": "6ba1179e705fb70d5277771c693f674e09e9d585",
+  "dependencies": {
+    "npmlog": "^6.0.2"
+  }
 }

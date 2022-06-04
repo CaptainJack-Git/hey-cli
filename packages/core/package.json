@@ -25,6 +25,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@hey-cli/utils": "^0.0.2-alpha.0"
+    "@hey-cli/utils": "^0.0.2-alpha.0",
+    "import-local": "^3.1.0"
   }
 }
