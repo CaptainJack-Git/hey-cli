@@ -1,9 +1,13 @@
 const semver = require('semver')
 const colors = require('colors')
+const path = require('path')
 
 const pkg = require('../package.json')
-const { LOWEST_NODE_VERSION } = require('../lib/constants')
+const { LOWEST_NODE_VERSION, DEFAULT_CLI_HOME } = require('../lib/constants')
 const { log } = require('@hey-cli/utils')
+
+let userHome
+let config
 
 function core() {
   console.log('执行入口')
@@ -19,6 +23,7 @@ function core() {
   checkRoot()
 
   checkUserHome()
+  checkEnv()
 }
 
 function checkPkgVersion() {
@@ -47,8 +52,7 @@ function checkRoot() {
 
 // 判断用户主目录
 function checkUserHome() {
-  const userHome = require('userhome')()
-
+  userHome = require('userhome')()
   ;(async () => {
     const { pathExists } = await import('path-exists')
     if (!userHome || !pathExists(userHome)) {
@@ -67,6 +71,40 @@ function checkArgvs() {
 
   log.level = process.env.LOG_LEVEL || 'info'
   log.verbose('开启调试测试')
+}
+
+// 检查环境变量
+function checkEnv() {
+  const dotenv = require('dotenv')
+  // 这个是在全局主目录的环境变量文件
+  const envPath = path.join(userHome, '.env')
+
+  ;(async () => {
+    const { pathExists } = await import('path-exists')
+    if (pathExists(envPath)) {
+      dotenv.config({ path: envPath })
+    }
+  })()
+
+  createDefaultConfig()
+  log.verbose('环境变量', process.env.CLI_HOME_PATH)
+}
+
+// 默认配置
+function createDefaultConfig() {
+  const cliConfig = {
+    home: userHome,
+  }
+
+  if (process.env.CLI_HOME) {
+    cliConfig.cliHome = path.join(userHome, process.env.CLI_HOME)
+  } else {
+    cliConfig.cliHome = path.join(userHome, DEFAULT_CLI_HOME)
+  }
+
+  process.env.CLI_HOME_PATH = cliConfig.cliHome
+
+  return cliConfig
 }
 
 module.exports = core
