@@ -5,8 +5,10 @@ const pkg = require('../package.json')
 const { LOWEST_NODE_VERSION } = require('../lib/constants')
 const { log } = require('@hey-cli/utils')
 
-function core(argvs) {
-  console.log('执行入口', argvs)
+function core() {
+  console.log('执行入口')
+  checkArgvs()
+
   try {
     checkPkgVersion()
     checkNodeVersion()
@@ -53,6 +55,18 @@ function checkUserHome() {
       throw new Error(colors.red(`用户主目录不存在，请检查`))
     }
   })()
+}
+
+// 检查入参
+function checkArgvs() {
+  const argvs = require('minimist')(process.argv.slice(2))
+
+  if (argvs.debug) {
+    process.env.LOG_LEVEL = 'verbose'
+  }
+
+  log.level = process.env.LOG_LEVEL || 'info'
+  log.verbose('开启调试测试')
 }
 
 module.exports = core
