@@ -4,17 +4,15 @@ const path = require('path')
 
 const pkg = require('../package.json')
 const { LOWEST_NODE_VERSION, DEFAULT_CLI_HOME } = require('../lib/constants')
-const { log } = require('@hey-cli/utils')
+const { log, npm } = require('@hey-cli/utils')
 
 let userHome
 let config
 
-function core() {
-  console.log('执行入口')
+async function core() {
   checkArgvs()
 
   try {
-    checkPkgVersion()
     checkNodeVersion()
   } catch (err) {
     log.error(err.message)
@@ -24,10 +22,7 @@ function core() {
 
   checkUserHome()
   checkEnv()
-}
-
-function checkPkgVersion() {
-  console.log(pkg.version)
+  await checkGlobalUpdate()
 }
 
 // 设置最低版本号，对比用户node版本是否可以运行
@@ -105,6 +100,30 @@ function createDefaultConfig() {
   process.env.CLI_HOME_PATH = cliConfig.cliHome
 
   return cliConfig
+}
+
+//
+/**
+ * 检查脚手架版本是否需要更新
+ * 1、获取当前版本号和模块名
+ * 2、调用 npm API，获取远端 npm 所有版本号
+ * 3、提取所有版本号，比对哪些版本号是大于当前版本号
+ * 4、获取最新的版本号，提示用户更新版本
+ */
+async function checkGlobalUpdate() {
+  // 获取当前版本号和模块名
+  const currentVersion = pkg.version
+  const npmName = pkg.name
+
+  const latestVersion = await npm.getNpmLatestSemverVersion(npmName, currentVersion)
+  log.verbose('检查 hey-cli 最新版本', currentVersion, latestVersion)
+
+  if (latestVersion && semver.gt(latestVersion, currentVersion)) {
+    log.warn(`hey-cli 有新版本! 当前版本为 ${currentVersion}, 最新版本为 ${latestVersion}
+    请使用 npm update -g hey-cli 更新`)
+  } else {
+    log.verbose('hey-cli 已经是最新版本')
+  }
 }
 
 module.exports = core
