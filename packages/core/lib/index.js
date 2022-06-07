@@ -1,16 +1,19 @@
 const semver = require('semver')
 const colors = require('colors')
 const path = require('path')
+const commander = require('commander')
 
 const pkg = require('../package.json')
 const { LOWEST_NODE_VERSION, DEFAULT_CLI_HOME } = require('../lib/constants')
+const { init } = require('@hey-cli/commands')
 const { log, npm } = require('@hey-cli/utils')
 
 let userHome
 let config
 
 async function core() {
-  checkArgvs()
+  // FIXME: 后续删除，已经将此逻辑移到了commander处理
+  // checkArgvs()
 
   try {
     checkNodeVersion()
@@ -23,6 +26,7 @@ async function core() {
   checkUserHome()
   checkEnv()
   await checkGlobalUpdate()
+  registeCommand()
 }
 
 // 设置最低版本号，对比用户node版本是否可以运行
@@ -124,6 +128,47 @@ async function checkGlobalUpdate() {
   } else {
     log.verbose('hey-cli 已经是最新版本')
   }
+}
+
+const program = new commander.Command()
+
+function registeCommand() {
+  program
+    .version(pkg.version)
+    .name(Object.keys(pkg.bin)[0])
+    .usage('<command> [options]')
+    .option('-d, --debug', '是否调试模式', false)
+
+  program.command('init [projectName]').option('-f, --force', '是否强制初始化', false).action(init)
+
+  // debug模式监测
+  program.on('option:debug', () => {
+    if (program.opts().debug) {
+      process.env.LOG_LEVEL = 'verbose'
+    } else {
+      process.env.LOG_LEVEL = 'info'
+    }
+
+    log.level = process.env.LOG_LEVEL
+    if (program.opts().debug) {
+      log.verbose('开启调试测试')
+    }
+  })
+
+  // 未知不可用命令的提示
+  program.on('command:*', obj => {
+    const availableCommands = Object.keys(program.commands.map(cmd => cmd.name()))
+    console.log(availableCommands)
+    console.log(colors.red('未知命令: ', obj[0]))
+    console.log(colors.red('可用命令: ', availableCommands.join('| ')))
+  })
+
+  // 当没有命令输入、或者只有参数，如 -d 输入的时候，也显示帮助信息，比如只输入一个 hey，或者 hey -d
+  if (program.args.length < 1) {
+    program.outputHelp()
+  }
+  // 对命令正常解析
+  program.parse(process.argv)
 }
 
 module.exports = core
