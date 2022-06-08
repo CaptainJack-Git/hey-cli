@@ -1,5 +1,6 @@
-function init(projectName, options) {
-  console.log(projectName, options, 'haha')
+function init(name, options) {
+  const { projectName, targetPath, force } = options
+  console.log('初始化参数', options)
 }
 
 module.exports = init

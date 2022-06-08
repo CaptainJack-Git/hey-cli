@@ -139,7 +139,12 @@ function registeCommand() {
     .usage('<command> [options]')
     .option('-d, --debug', '是否调试模式', false)
 
-  program.command('init [projectName]').option('-f, --force', '是否强制初始化', false).action(init)
+  program
+    .command('init [projectName]')
+    .option('-f, --force', '是否强制初始化', false)
+    // 常用于调试时使用
+    .option('-tp, --target-path <targetPath>', '是否指定本地调试目标路径', '')
+    .action(init)
 
   // debug模式监测
   program.on('option:debug', () => {
