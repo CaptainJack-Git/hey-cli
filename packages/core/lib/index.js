@@ -9,24 +9,22 @@ const { init } = require('@hey-cli/commands')
 const { log, npm } = require('@hey-cli/utils')
 
 let userHome
-let config
 
-async function core() {
-  // FIXME: 后续删除，已经将此逻辑移到了commander处理
-  // checkArgvs()
-
-  try {
-    checkNodeVersion()
-  } catch (err) {
-    log.error(err.message)
-  }
-
+async function prepare() {
   checkRoot()
-
+  checkNodeVersion()
   checkUserHome()
   checkEnv()
   await checkGlobalUpdate()
-  registeCommand()
+}
+
+async function core() {
+  try {
+    await prepare()
+    registerCommand()
+  } catch (err) {
+    log.error(err.message)
+  }
 }
 
 // 设置最低版本号，对比用户node版本是否可以运行
@@ -60,18 +58,6 @@ function checkUserHome() {
   })()
 }
 
-// 检查入参
-function checkArgvs() {
-  const argvs = require('minimist')(process.argv.slice(2))
-
-  if (argvs.debug) {
-    process.env.LOG_LEVEL = 'verbose'
-  }
-
-  log.level = process.env.LOG_LEVEL || 'info'
-  log.verbose('开启调试测试')
-}
-
 // 检查环境变量
 function checkEnv() {
   const dotenv = require('dotenv')
@@ -86,7 +72,6 @@ function checkEnv() {
   })()
 
   createDefaultConfig()
-  log.verbose('环境变量', process.env.CLI_HOME_PATH)
 }
 
 // 默认配置
@@ -120,7 +105,6 @@ async function checkGlobalUpdate() {
   const npmName = pkg.name
 
   const latestVersion = await npm.getNpmLatestSemverVersion(npmName, currentVersion)
-  log.verbose('检查 hey-cli 最新版本', currentVersion, latestVersion)
 
   if (latestVersion && semver.gt(latestVersion, currentVersion)) {
     log.warn(`hey-cli 有新版本! 当前版本为 ${currentVersion}, 最新版本为 ${latestVersion}
@@ -132,7 +116,7 @@ async function checkGlobalUpdate() {
 
 const program = new commander.Command()
 
-function registeCommand() {
+function registerCommand() {
   program
     .version(pkg.version)
     .name(Object.keys(pkg.bin)[0])
