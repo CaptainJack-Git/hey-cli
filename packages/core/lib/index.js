@@ -5,10 +5,14 @@ const commander = require('commander')
 
 const pkg = require('../package.json')
 const { LOWEST_NODE_VERSION, DEFAULT_CLI_HOME } = require('../lib/constants')
-const { init } = require('@hey-cli/commands')
-const { log, npm } = require('@hey-cli/utils')
+const init = require('@hey-cli/init')
+const { log, npm, func, Package } = require('@hey-cli/utils')
+
+const program = new commander.Command()
 
 let userHome
+// 缓存的目录
+const CACHE_PATH = 'dependencies'
 
 async function prepare() {
   checkRoot()
@@ -24,6 +28,9 @@ async function core() {
     registerCommand()
   } catch (err) {
     log.error(err.message)
+    if (program.debug) {
+      console.error(err)
+    }
   }
 }
 
@@ -104,7 +111,7 @@ async function checkGlobalUpdate() {
   const currentVersion = pkg.version
   const npmName = pkg.name
 
-  const latestVersion = await npm.getNpmLatestSemverVersion(npmName, currentVersion)
+  const latestVersion = await npm.getNpmLatestSemverVersion(npmName)
 
   if (latestVersion && semver.gt(latestVersion, currentVersion)) {
     log.warn(`hey-cli 有新版本! 当前版本为 ${currentVersion}, 最新版本为 ${latestVersion}
@@ -113,8 +120,6 @@ async function checkGlobalUpdate() {
     log.verbose('hey-cli 已经是最新版本')
   }
 }
-
-const program = new commander.Command()
 
 function registerCommand() {
   program
@@ -128,7 +133,21 @@ function registerCommand() {
     .option('-f, --force', '是否强制初始化', false)
     // 常用于调试时使用
     .option('-tp, --target-path <targetPath>', '是否指定本地调试目标路径', '')
-    .action(init)
+    .action((name, options) => {
+      let { targetPath } = options
+      let storeDir
+      const packageName = '@hey-cli/init'
+      const packageVersion = 'latest'
+
+      if (!targetPath) {
+        // 生成缓存路径
+        targetPath = path.resolve(process.env.CLI_HOME_PATH, CACHE_PATH)
+        storeDir = path.resolve(targetPath, 'node_modules')
+      }
+      console.log('调试', targetPath, storeDir)
+      // init(name, { ...options, packageName, packageVersion })
+      execCommand({ ...options, packageName, targetPath, storeDir, packageVersion })
+    })
 
   // debug模式监测
   program.on('option:debug', () => {
@@ -158,6 +177,47 @@ function registerCommand() {
   }
   // 对命令正常解析
   program.parse(process.argv)
+}
+
+async function execCommand(options) {
+  const { targetPath, storeDir, packageName, packageVersion } = options
+
+  let rootFile
+  let execPackage
+  try {
+    if (targetPath) {
+      execPackage = new Package({
+        targetPath,
+        storeDir,
+        packageName,
+        packageVersion,
+      })
+
+      if (await execPackage.exists()) {
+        // 更新
+        log.verbose('更新package')
+      } else {
+        // 安装
+        await execPackage.install()
+      }
+    } else {
+      execPackage = new Package({
+        targetPath,
+        packageName,
+        packageVersion,
+      })
+    }
+
+    rootFile = await execPackage.getRootFilePath()
+    if (rootFile) {
+      log.verbose('执行入口文件', rootFile)
+      console.log(options)
+      // TODO:此处参数，需要提供更新加工过的数据，而不是初始数据
+      require(rootFile)(options)
+    }
+  } catch (err) {
+    log.error(err.message)
+  }
 }
 
 module.exports = core

@@ -23,7 +23,11 @@
   "gitHead": "6ba1179e705fb70d5277771c693f674e09e9d585",
   "dependencies": {
     "axios": "^0.27.2",
+    "fs-extra": "^10.1.0",
+    "npminstall": "^6.3.0",
     "npmlog": "^6.0.2",
+    "path-exists": "^5.0.0",
+    "pkg-dir": "^6.0.1",
     "url-join": "^5.0.0"
   }
 }

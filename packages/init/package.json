@@ -1,11 +1,11 @@
 {
-  "name": "@hey-cli/commands",
+  "name": "@hey-cli/init",
   "version": "0.0.4-alpha.0",
-  "description": "注册的命令集合",
+  "description": "> TODO: description",
   "author": "CaptainJack <captain_jack_mail@163.com>",
   "homepage": "https://github.com/CaptainJack-Git/hey-cli#readme",
   "license": "ISC",
-  "main": "index.js",
+  "main": "lib/init.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -13,6 +13,9 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CaptainJack-Git/hey-cli.git"

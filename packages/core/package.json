@@ -25,13 +25,15 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@hey-cli/utils": "^0.0.2-alpha.0",
     "@hey-cli/commands": "^0.0.4-alpha.0",
+    "@hey-cli/init": "^0.0.4-alpha.0",
+    "@hey-cli/utils": "^0.0.2-alpha.0",
     "colors": "^1.4.0",
     "commander": "^9.3.0",
     "dotenv": "^16.0.1",
     "import-local": "^3.1.0",
     "minimist": "^1.2.6",
+    "npminstall": "^6.3.0",
     "path-exists": "^5.0.0",
     "root-check": "^2.0.0",
     "semver": "^7.3.7",

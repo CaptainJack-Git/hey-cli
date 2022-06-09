@@ -44,19 +44,19 @@ function getNpmVersions(npmName, registry) {
 }
 
 // 根据指定 version 获取符合 semver 规范的最新版本号
-function getLatestSemverVersion(baseVersion, versions) {
+function getLatestSemverVersion(versions) {
   versions = versions
     // 将满足条件的版本号过滤出来，比如当前版本是 1.0.0，那么只有大于 1.0.0 的版本才会满足
-    .filter(version => semver.gt(version, baseVersion))
+    // .filter(version => semver.gt(version))
     .sort((a, b) => semver.gt(b, a))
   // 将满足条件的最新的版本号返回
   return versions[0]
 }
 
 // 根据指定 version 和包名获取符合 semver 规范的最新版本号
-function getNpmLatestSemverVersion(npmName, baseVersion, registry) {
+function getNpmLatestSemverVersion(npmName, registry) {
   return getNpmVersions(npmName, registry).then(function (versions) {
-    return getLatestSemverVersion(baseVersion, versions)
+    return getLatestSemverVersion(versions)
   })
 }
 

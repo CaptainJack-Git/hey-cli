@@ -7,12 +7,18 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "Hey Debug",
+      "name": "Hey Init",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "program": "${workspaceFolder}/packages/core/index.js",
-      "args": ["--debug"],
+      "args": [
+        "--debug",
+        "init",
+        // "-tp",
+        // "/Users/pearl/Super/hey-cli/packages/init/lib"
+      ],
+      "console": "integratedTerminal",
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ]
