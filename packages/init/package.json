@@ -1,6 +1,6 @@
 {
   "name": "@hey-cli/init",
-  "version": "0.0.4-alpha.0",
+  "version": "0.0.5-alpha.0",
   "description": "> TODO: description",
   "author": "CaptainJack <captain_jack_mail@163.com>",
   "homepage": "https://github.com/CaptainJack-Git/hey-cli#readme",
@@ -27,6 +27,6 @@
     "url": "https://github.com/CaptainJack-Git/hey-cli/issues"
   },
   "dependencies": {
-    "@hey-cli/utils": "^0.0.2-alpha.0"
+    "@hey-cli/utils": "^0.0.5-alpha.0"
   }
 }
